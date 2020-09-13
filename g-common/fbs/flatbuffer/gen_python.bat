@@ -1,0 +1,1 @@
+flatc.exe -p -o flat_python message.fbs --gen-mutable

@@ -1,0 +1,93 @@
+namespace com.leegm.common.protocol;
+
+
+// enum ============================================================================
+enum ResultCode:byte{
+	SUCCESS,
+	ERROR
+}
+
+enum MethodCode:byte{
+	NONE,
+	CREATE,
+	READ,
+	UPDATE,
+	DELETE
+}
+
+enum TypeCode:byte{
+	PLAYER,
+	NPC,
+	OBJECT
+}
+
+enum StateCode:byte{
+	IDLE,
+	MOVE,
+	ATTACK,
+	DEAD
+}
+
+enum EventCode:byte{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+}
+
+// struct ============================================================================
+struct Item{
+	templateId:ulong;
+	amount:ulong;
+}
+
+struct Vec3{
+	x:float;
+	y:float;
+	z:float;
+}
+
+// table ============================================================================
+table Object{
+	objectId:string;
+	name:string;
+	type:TypeCode;
+	state:StateCode;
+	position:Vec3;
+	direction:Vec3;
+	attackSpeed:float;
+	moveSpeed:float;
+}
+
+table Context{
+    userId:string;
+    sessionId:string;
+}
+
+// message ===========================================================================
+union Payload{
+	Chat, Field, Inventory
+}
+
+table Field{
+	objects:[Object];
+}
+
+table Chat{
+	topic:string;
+	userId:string;
+	content:string;
+}
+
+table Inventory{
+	items:[Item];
+}
+
+table Message{
+    context:Context;
+	method:MethodCode;
+	result:ResultCode;
+	payload:Payload;
+}
+
+root_type Message;
