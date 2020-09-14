@@ -23,8 +23,7 @@ public class Decoder extends ByteToMessageDecoder {
         try {
             Message message = Message.getRootAsMessage(ByteBuffer.wrap(bytes));
             out.add(message);
-        } catch (Exception e) {
-            throw new RuntimeException();
+        } catch (Exception ignored) {
         }
     }
 }

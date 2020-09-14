@@ -15,7 +15,7 @@ repositories {
 }
 
 bootJar {
-    mainClassName = 'com.leegm.session.Application'
+    mainClassName = 'com.leegm.client.Application'
     destinationDirectory = file(project.buildDir)
 }
 

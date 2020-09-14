@@ -16,10 +16,10 @@ public abstract class AbstractHandler<T extends Table> implements Handler<T> {
             e.printStackTrace();
         }
 
-        return empty();
+        return success();
     }
 
-    public byte[] empty() {
-        return Converter.toEmpty();
+    public byte[] success() {
+        return Converter.toSuccess();
     }
 }

@@ -8,7 +8,7 @@ import com.leegm.common.protocol.*;
 
 public final class Converter {
 
-    public static byte[] toEmpty() {
+    public static byte[] toSuccess() {
         FlatBufferBuilder builder = new FlatBufferBuilder();
         builder.finish(Message.createMessage(builder, 0, MethodCode.NONE, ResultCode.SUCCESS, Payload.NONE, 0));
 

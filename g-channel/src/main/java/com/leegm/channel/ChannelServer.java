@@ -37,7 +37,7 @@ public class ChannelServer implements ApplicationRunner {
                 .doOnConnection(conn -> conn.addHandler(new Decoder()))
                 .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receiveObject()
                         .ofType(Message.class)
-                        .log("channel server inbound")
+                        .log("channel server")
                         .map(message -> dispatcher.handle(message))
                         .mergeWith(chatPublisher.subscribe(inbound.hashCode()))
                 ))

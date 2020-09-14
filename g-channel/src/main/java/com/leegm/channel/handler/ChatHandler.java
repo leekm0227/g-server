@@ -32,6 +32,6 @@ public class ChatHandler extends AbstractHandler<Chat> {
     @Override
     public byte[] handle(Chat chat) {
         chatPublisher.onNext(chat);
-        return empty();
+        return success();
     }
 }

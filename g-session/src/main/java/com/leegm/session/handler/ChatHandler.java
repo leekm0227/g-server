@@ -4,7 +4,7 @@ import com.leegm.common.handler.AbstractHandler;
 import com.leegm.common.protocol.Chat;
 import com.leegm.common.protocol.Payload;
 import com.leegm.common.util.Dispatcher;
-import com.leegm.session.client.ChannelClient;
+import com.leegm.session.publisher.ChannelPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ChatHandler extends AbstractHandler<Chat> {
     Dispatcher dispatcher;
 
     @Autowired
-    ChannelClient channelClient;
+    ChannelPublisher channelPublisher;
 
     @PostConstruct
     public void init() {
@@ -31,6 +31,8 @@ public class ChatHandler extends AbstractHandler<Chat> {
 
     @Override
     public byte[] handle(Chat chat) {
-        return chat.getByteBuffer().array();
+        channelPublisher.onNext(chat.getByteBuffer().array());
+        return success();
     }
+
 }
