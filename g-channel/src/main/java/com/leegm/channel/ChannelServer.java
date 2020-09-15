@@ -1,8 +1,6 @@
 package com.leegm.channel;
 
 import com.leegm.channel.publisher.ChatPublisher;
-import com.leegm.channel.util.Decoder;
-import com.leegm.common.protocol.Message;
 import com.leegm.common.util.Dispatcher;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
@@ -10,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import reactor.netty.tcp.TcpServer;
 
@@ -34,11 +31,10 @@ public class ChannelServer implements ApplicationRunner {
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .port(50000)
-                .doOnConnection(conn -> conn.addHandler(new Decoder()))
-                .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receiveObject()
-                        .ofType(Message.class)
+                .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receive()
+                        .asByteArray()
                         .log("channel server")
-                        .map(message -> dispatcher.handle(message))
+                        .map(dispatcher::handle)
                         .mergeWith(chatPublisher.subscribe(inbound.hashCode()))
                 ))
                 .bindUntilJavaShutdown(Duration.ofSeconds(30), null);

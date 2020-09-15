@@ -15,8 +15,8 @@ public class SessionPublisher {
 
     private AtomicInteger count = new AtomicInteger(0);
     private static final Logger logger = LoggerFactory.getLogger(SessionPublisher.class);
-    public UnicastProcessor<Message> sessionPublisher;
-    public Flux<Message> sessionFlux;
+    public UnicastProcessor<byte[]> sessionPublisher;
+    public Flux<byte[]> sessionFlux;
 
     @PostConstruct
     public void init() {
@@ -24,11 +24,11 @@ public class SessionPublisher {
         sessionFlux = sessionPublisher.replay(1).autoConnect(0);
     }
 
-    public void onNext(Message message) {
-        sessionPublisher.onNext(message);
+    public void onNext(byte[] bytes) {
+        sessionPublisher.onNext(bytes);
     }
 
     public Flux<byte[]> subscribe() {
-        return sessionFlux.map(message -> message.getByteBuffer().array());
+        return sessionFlux;
     }
 }

@@ -1,10 +1,8 @@
 package com.leegm.session;
 
-import com.leegm.common.protocol.Message;
 import com.leegm.common.util.Dispatcher;
 import com.leegm.session.publisher.SessionPublisher;
 import com.leegm.session.util.ConnManager;
-import com.leegm.session.util.Decoder;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +35,8 @@ public class SessionServer implements ApplicationRunner {
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .port(40000)
-                .doOnConnection(conn -> {
-                    conn.addHandler(new Decoder());
-                    connManager.onConnect(conn);
-                })
-                .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receiveObject()
-                        .ofType(Message.class)
+                .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receive()
+                        .asByteArray()
                         .log("session server")
                         .map(dispatcher::handle)
                         .mergeWith(sessionPublisher.subscribe())
