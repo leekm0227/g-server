@@ -2,8 +2,8 @@
 
 package com.leegm.common.protocol;
 
-public final class TypeCode {
-  private TypeCode() { }
+public final class Type {
+  private Type() { }
   public static final byte PLAYER = 0;
   public static final byte NPC = 1;
   public static final byte OBJECT = 2;

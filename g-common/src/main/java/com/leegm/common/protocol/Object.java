@@ -15,30 +15,42 @@ public final class Object extends Table {
   public void __init(int _i, ByteBuffer _bb) { __reset(_i, _bb); }
   public Object __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public String objectId() { int o = __offset(4); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer objectIdAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
-  public ByteBuffer objectIdInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
-  public String name() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer nameAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
-  public ByteBuffer nameInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
+  public String name() { int o = __offset(4); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer nameAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
+  public ByteBuffer nameInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
+  public long objectId() { int o = __offset(6); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
   public byte type() { int o = __offset(8); return o != 0 ? bb.get(o + bb_pos) : 0; }
   public byte state() { int o = __offset(10); return o != 0 ? bb.get(o + bb_pos) : 0; }
   public com.leegm.common.protocol.Vec3 position() { return position(new com.leegm.common.protocol.Vec3()); }
   public com.leegm.common.protocol.Vec3 position(com.leegm.common.protocol.Vec3 obj) { int o = __offset(12); return o != 0 ? obj.__assign(o + bb_pos, bb) : null; }
   public com.leegm.common.protocol.Vec3 direction() { return direction(new com.leegm.common.protocol.Vec3()); }
   public com.leegm.common.protocol.Vec3 direction(com.leegm.common.protocol.Vec3 obj) { int o = __offset(14); return o != 0 ? obj.__assign(o + bb_pos, bb) : null; }
-  public float attackSpeed() { int o = __offset(16); return o != 0 ? bb.getFloat(o + bb_pos) : 0.0f; }
-  public float moveSpeed() { int o = __offset(18); return o != 0 ? bb.getFloat(o + bb_pos) : 0.0f; }
+  public long hp() { int o = __offset(16); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
+  public long mp() { int o = __offset(18); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
+  public float power() { int o = __offset(20); return o != 0 ? bb.getFloat(o + bb_pos) : 0.0f; }
+  public float defense() { int o = __offset(22); return o != 0 ? bb.getFloat(o + bb_pos) : 0.0f; }
+  public long range() { int o = __offset(24); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
+  public float attackSpeed() { int o = __offset(26); return o != 0 ? bb.getFloat(o + bb_pos) : 0.0f; }
+  public float moveSpeed() { int o = __offset(28); return o != 0 ? bb.getFloat(o + bb_pos) : 0.0f; }
+  public long maxHp() { int o = __offset(30); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
+  public long maxMp() { int o = __offset(32); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
 
-  public static void startObject(FlatBufferBuilder builder) { builder.startTable(8); }
-  public static void addObjectId(FlatBufferBuilder builder, int objectIdOffset) { builder.addOffset(0, objectIdOffset, 0); }
-  public static void addName(FlatBufferBuilder builder, int nameOffset) { builder.addOffset(1, nameOffset, 0); }
+  public static void startObject(FlatBufferBuilder builder) { builder.startTable(15); }
+  public static void addName(FlatBufferBuilder builder, int nameOffset) { builder.addOffset(0, nameOffset, 0); }
+  public static void addObjectId(FlatBufferBuilder builder, long objectId) { builder.addInt(1, (int)objectId, (int)0L); }
   public static void addType(FlatBufferBuilder builder, byte type) { builder.addByte(2, type, 0); }
   public static void addState(FlatBufferBuilder builder, byte state) { builder.addByte(3, state, 0); }
   public static void addPosition(FlatBufferBuilder builder, int positionOffset) { builder.addStruct(4, positionOffset, 0); }
   public static void addDirection(FlatBufferBuilder builder, int directionOffset) { builder.addStruct(5, directionOffset, 0); }
-  public static void addAttackSpeed(FlatBufferBuilder builder, float attackSpeed) { builder.addFloat(6, attackSpeed, 0.0f); }
-  public static void addMoveSpeed(FlatBufferBuilder builder, float moveSpeed) { builder.addFloat(7, moveSpeed, 0.0f); }
+  public static void addHp(FlatBufferBuilder builder, long hp) { builder.addInt(6, (int)hp, (int)0L); }
+  public static void addMp(FlatBufferBuilder builder, long mp) { builder.addInt(7, (int)mp, (int)0L); }
+  public static void addPower(FlatBufferBuilder builder, float power) { builder.addFloat(8, power, 0.0f); }
+  public static void addDefense(FlatBufferBuilder builder, float defense) { builder.addFloat(9, defense, 0.0f); }
+  public static void addRange(FlatBufferBuilder builder, long range) { builder.addInt(10, (int)range, (int)0L); }
+  public static void addAttackSpeed(FlatBufferBuilder builder, float attackSpeed) { builder.addFloat(11, attackSpeed, 0.0f); }
+  public static void addMoveSpeed(FlatBufferBuilder builder, float moveSpeed) { builder.addFloat(12, moveSpeed, 0.0f); }
+  public static void addMaxHp(FlatBufferBuilder builder, long maxHp) { builder.addInt(13, (int)maxHp, (int)0L); }
+  public static void addMaxMp(FlatBufferBuilder builder, long maxMp) { builder.addInt(14, (int)maxMp, (int)0L); }
   public static int endObject(FlatBufferBuilder builder) {
     int o = builder.endTable();
     return o;

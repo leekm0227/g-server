@@ -1,8 +1,8 @@
 package com.leegm.channel.handler;
 
-import com.leegm.channel.publisher.ChatPublisher;
+import com.leegm.channel.publisher.ZonePublisher;
 import com.leegm.common.handler.AbstractHandler;
-import com.leegm.common.protocol.Chat;
+import com.leegm.common.protocol.Action;
 import com.leegm.common.protocol.Context;
 import com.leegm.common.protocol.Payload;
 import com.leegm.common.protocol.Result;
@@ -15,25 +15,25 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-public class ChatHandler extends AbstractHandler<Chat> {
+public class ActionHandler extends AbstractHandler<Action> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChatHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionHandler.class);
 
     @Autowired
-    ChatPublisher chatPublisher;
+    ZonePublisher zonePublisher;
 
     @Autowired
     Dispatcher dispatcher;
 
     @PostConstruct
     public void init() {
-        cls = Chat.class;
-        dispatcher.register(Payload.Chat, this);
+        cls = Action.class;
+        dispatcher.register(Payload.Action, this);
     }
 
     @Override
-    public byte[] handle(Context context, Chat chat) {
-        chatPublisher.onNext(chat);
+    public byte[] handle(Context context, Action action) {
+        zonePublisher.onNext(action.object());
         return response(context, Result.SUCCESS);
     }
 }

@@ -16,10 +16,10 @@ public final class Inventory extends Table {
   public Inventory __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
   public com.leegm.common.protocol.Item items(int j) { return items(new com.leegm.common.protocol.Item(), j); }
-  public com.leegm.common.protocol.Item items(com.leegm.common.protocol.Item obj, int j) { int o = __offset(4); return o != 0 ? obj.__assign(__vector(o) + j * 16, bb) : null; }
+  public com.leegm.common.protocol.Item items(com.leegm.common.protocol.Item obj, int j) { int o = __offset(4); return o != 0 ? obj.__assign(__vector(o) + j * 8, bb) : null; }
   public int itemsLength() { int o = __offset(4); return o != 0 ? __vector_len(o) : 0; }
   public com.leegm.common.protocol.Item.Vector itemsVector() { return itemsVector(new com.leegm.common.protocol.Item.Vector()); }
-  public com.leegm.common.protocol.Item.Vector itemsVector(com.leegm.common.protocol.Item.Vector obj) { int o = __offset(4); return o != 0 ? obj.__assign(__vector(o), 16, bb) : null; }
+  public com.leegm.common.protocol.Item.Vector itemsVector(com.leegm.common.protocol.Item.Vector obj) { int o = __offset(4); return o != 0 ? obj.__assign(__vector(o), 8, bb) : null; }
 
   public static int createInventory(FlatBufferBuilder builder,
       int itemsOffset) {
@@ -30,7 +30,7 @@ public final class Inventory extends Table {
 
   public static void startInventory(FlatBufferBuilder builder) { builder.startTable(1); }
   public static void addItems(FlatBufferBuilder builder, int itemsOffset) { builder.addOffset(0, itemsOffset, 0); }
-  public static void startItemsVector(FlatBufferBuilder builder, int numElems) { builder.startVector(16, numElems, 8); }
+  public static void startItemsVector(FlatBufferBuilder builder, int numElems) { builder.startVector(8, numElems, 4); }
   public static int endInventory(FlatBufferBuilder builder) {
     int o = builder.endTable();
     return o;

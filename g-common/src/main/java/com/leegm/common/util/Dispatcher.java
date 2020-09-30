@@ -2,6 +2,7 @@ package com.leegm.common.util;
 
 import com.leegm.common.handler.AbstractHandler;
 import com.leegm.common.protocol.Message;
+import com.leegm.common.protocol.Result;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -19,17 +20,20 @@ public class Dispatcher {
     }
 
     public byte[] handle(byte[] bytes) {
+        // convert message
+        Message message;
         try {
-            Message message = Message.getRootAsMessage(ByteBuffer.wrap(bytes));
-            AbstractHandler<?> handler = handlers.get(message.payloadType());
-
-            if (handler == null) {
-                throw new RuntimeException();
-            }
-
-            return handler.handle(message);
-        } catch (Exception e) {
-            return Converter.toSuccess();
+            message = Message.getRootAsMessage(ByteBuffer.wrap(bytes));
+        }catch (Exception e){
+            return Converter.response(null, Result.ERROR_INVALID_MESSAGE);
         }
+
+        // get handler
+        AbstractHandler<?> handler = handlers.get(message.payloadType());
+        if (handler == null) {
+            return Converter.response(null, Result.ERROR_HANDLER_NOT_FOUND);
+        }
+
+        return handler.handle(message);
     }
 }

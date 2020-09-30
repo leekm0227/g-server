@@ -2,8 +2,8 @@
 
 package com.leegm.common.protocol;
 
-public final class StateCode {
-  private StateCode() { }
+public final class State {
+  private State() { }
   public static final byte IDLE = 0;
   public static final byte MOVE = 1;
   public static final byte ATTACK = 2;

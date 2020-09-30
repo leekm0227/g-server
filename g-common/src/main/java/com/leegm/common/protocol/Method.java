@@ -2,8 +2,8 @@
 
 package com.leegm.common.protocol;
 
-public final class MethodCode {
-  private MethodCode() { }
+public final class Method {
+  private Method() { }
   public static final byte NONE = 0;
   public static final byte CREATE = 1;
   public static final byte READ = 2;

@@ -3,14 +3,24 @@ package com.leegm.common.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class FieldBean extends AbstractBean {
-    Collection<ObjectBean> objects;
+public class ZoneBean extends AbstractBean {
 
-    public FieldBean(Collection<ObjectBean> objects) {
+    private int zoneId;
+    private Collection<ObjectBean> objects;
+
+    public int getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(int zoneId) {
+        this.zoneId = zoneId;
+    }
+
+    public ZoneBean(Collection<ObjectBean> objects) {
         this.objects = objects;
     }
 
-    public FieldBean() {
+    public ZoneBean() {
         this.objects = new ArrayList<>();
     }
 

@@ -20,8 +20,8 @@ public class ChannelTask {
 
     @Scheduled(fixedRate = 1000)
     public void task() {
-        Message msg = Message.getRootAsMessage(ByteBuffer.wrap(Converter.toChat("testcid", "testoid", "content")));
-        Chat chat = (Chat) msg.payload(new Chat());
+//        Message msg = Message.getRootAsMessage(ByteBuffer.wrap(Converter.toChat("testcid", "testoid", "content")));
+//        Chat chat = (Chat) msg.payload(new Chat());
 //        chatPublisher.onNext(chat);
     }
 }

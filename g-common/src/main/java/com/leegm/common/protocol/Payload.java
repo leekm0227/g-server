@@ -6,10 +6,11 @@ public final class Payload {
   private Payload() { }
   public static final byte NONE = 0;
   public static final byte Chat = 1;
-  public static final byte Field = 2;
+  public static final byte Zone = 2;
   public static final byte Inventory = 3;
+  public static final byte Action = 4;
 
-  public static final String[] names = { "NONE", "Chat", "Field", "Inventory", };
+  public static final String[] names = { "NONE", "Chat", "Zone", "Inventory", "Action", };
 
   public static String name(int e) { return names[e]; }
 }

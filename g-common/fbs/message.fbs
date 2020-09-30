@@ -2,12 +2,14 @@ namespace com.leegm.common.protocol;
 
 
 // enum ============================================================================
-enum ResultCode:byte{
+enum Result:byte{
 	SUCCESS,
-	ERROR
+	ERROR_INVALID_MESSAGE,
+	ERROR_HANDLER_NOT_FOUND,
+	ERROR_CLS_NOT_FOUND
 }
 
-enum MethodCode:byte{
+enum Method:byte{
 	NONE,
 	CREATE,
 	READ,
@@ -15,30 +17,31 @@ enum MethodCode:byte{
 	DELETE
 }
 
-enum TypeCode:byte{
+enum Type:byte{
 	PLAYER,
 	NPC,
 	OBJECT
 }
 
-enum StateCode:byte{
+enum State:byte{
 	IDLE,
 	MOVE,
 	ATTACK,
 	DEAD
 }
 
-enum EventCode:byte{
+enum Event:byte{
     UP,
     DOWN,
     LEFT,
-    RIGHT
+    RIGHT,
+    ATTACK
 }
 
 // struct ============================================================================
 struct Item{
-	templateId:ulong;
-	amount:ulong;
+	templateId:uint;
+	amount:uint;
 }
 
 struct Vec3{
@@ -49,14 +52,22 @@ struct Vec3{
 
 // table ============================================================================
 table Object{
-	objectId:string;
-	name:string;
-	type:TypeCode;
-	state:StateCode;
+    name:string;
+	objectId:uint;
+	type:Type;
+	state:State;
 	position:Vec3;
 	direction:Vec3;
-	attackSpeed:float;
-	moveSpeed:float;
+	hp:uint;
+	mp:uint;
+
+    power:float;
+    defense:float;
+    range:uint;
+    attackSpeed:float;
+    moveSpeed:float;
+    maxHp:uint;
+    maxMp:uint;
 }
 
 table Context{
@@ -66,16 +77,18 @@ table Context{
 
 // message ===========================================================================
 union Payload{
-	Chat, Field, Inventory
+	Chat, Zone, Inventory, Action
 }
 
-table Field{
+table Zone{
+    zoneId:uint;
 	objects:[Object];
 }
 
 table Chat{
 	topic:string;
 	userId:string;
+	name:string;
 	content:string;
 }
 
@@ -83,10 +96,14 @@ table Inventory{
 	items:[Item];
 }
 
+table Action{
+    object:Object;
+}
+
 table Message{
     context:Context;
-	method:MethodCode;
-	result:ResultCode;
+	method:Method;
+	result:Result;
 	payload:Payload;
 }
 

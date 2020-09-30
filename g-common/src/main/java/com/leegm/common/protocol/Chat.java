@@ -21,25 +21,31 @@ public final class Chat extends Table {
   public String userId() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
   public ByteBuffer userIdAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
   public ByteBuffer userIdInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
-  public String content() { int o = __offset(8); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer contentAsByteBuffer() { return __vector_as_bytebuffer(8, 1); }
-  public ByteBuffer contentInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 8, 1); }
+  public String name() { int o = __offset(8); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer nameAsByteBuffer() { return __vector_as_bytebuffer(8, 1); }
+  public ByteBuffer nameInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 8, 1); }
+  public String content() { int o = __offset(10); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer contentAsByteBuffer() { return __vector_as_bytebuffer(10, 1); }
+  public ByteBuffer contentInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 10, 1); }
 
   public static int createChat(FlatBufferBuilder builder,
       int topicOffset,
       int userIdOffset,
+      int nameOffset,
       int contentOffset) {
-    builder.startTable(3);
+    builder.startTable(4);
     Chat.addContent(builder, contentOffset);
+    Chat.addName(builder, nameOffset);
     Chat.addUserId(builder, userIdOffset);
     Chat.addTopic(builder, topicOffset);
     return Chat.endChat(builder);
   }
 
-  public static void startChat(FlatBufferBuilder builder) { builder.startTable(3); }
+  public static void startChat(FlatBufferBuilder builder) { builder.startTable(4); }
   public static void addTopic(FlatBufferBuilder builder, int topicOffset) { builder.addOffset(0, topicOffset, 0); }
   public static void addUserId(FlatBufferBuilder builder, int userIdOffset) { builder.addOffset(1, userIdOffset, 0); }
-  public static void addContent(FlatBufferBuilder builder, int contentOffset) { builder.addOffset(2, contentOffset, 0); }
+  public static void addName(FlatBufferBuilder builder, int nameOffset) { builder.addOffset(2, nameOffset, 0); }
+  public static void addContent(FlatBufferBuilder builder, int contentOffset) { builder.addOffset(3, contentOffset, 0); }
   public static int endChat(FlatBufferBuilder builder) {
     int o = builder.endTable();
     return o;

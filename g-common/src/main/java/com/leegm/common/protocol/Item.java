@@ -12,13 +12,13 @@ public final class Item extends Struct {
   public void __init(int _i, ByteBuffer _bb) { __reset(_i, _bb); }
   public Item __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public long templateId() { return bb.getLong(bb_pos + 0); }
-  public long amount() { return bb.getLong(bb_pos + 8); }
+  public long templateId() { return (long)bb.getInt(bb_pos + 0) & 0xFFFFFFFFL; }
+  public long amount() { return (long)bb.getInt(bb_pos + 4) & 0xFFFFFFFFL; }
 
   public static int createItem(FlatBufferBuilder builder, long templateId, long amount) {
-    builder.prep(8, 16);
-    builder.putLong(amount);
-    builder.putLong(templateId);
+    builder.prep(4, 8);
+    builder.putInt((int)amount);
+    builder.putInt((int)templateId);
     return builder.offset();
   }
 
