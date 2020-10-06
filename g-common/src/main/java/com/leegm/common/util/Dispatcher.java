@@ -20,20 +20,20 @@ public class Dispatcher {
     }
 
     public byte[] handle(byte[] bytes) {
-        // convert message
-        Message message;
         try {
-            message = Message.getRootAsMessage(ByteBuffer.wrap(bytes));
-        }catch (Exception e){
+            Message message = Message.getRootAsMessage(ByteBuffer.wrap(bytes));
+            AbstractHandler<?> handler = handlers.get(message.payloadType());
+
+            if (handler == null) {
+                return Converter.response(null, Result.ERROR_HANDLER_NOT_FOUND);
+            }
+
+            return handler.handle(message);
+        } catch (IndexOutOfBoundsException e) {
             return Converter.response(null, Result.ERROR_INVALID_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Converter.response(null, Result.ERROR_RUNTIME);
         }
-
-        // get handler
-        AbstractHandler<?> handler = handlers.get(message.payloadType());
-        if (handler == null) {
-            return Converter.response(null, Result.ERROR_HANDLER_NOT_FOUND);
-        }
-
-        return handler.handle(message);
     }
 }

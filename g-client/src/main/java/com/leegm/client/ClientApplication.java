@@ -4,6 +4,8 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import com.leegm.common.protocol.Object;
 import com.leegm.common.protocol.*;
 import com.leegm.common.util.Converter;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.http.server.HttpServer;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -16,9 +18,9 @@ public class ClientApplication {
 
     private static final List<Client> clients = new ArrayList<>();
     private static final AtomicInteger count = new AtomicInteger(0);
-    private static final int clientSize = 2;
-    private static final int sleepTime = 100;
-    private static final int port = 50000; // 40000 = session, 50000 = channel
+    private static final int clientSize = 3000;
+    private static final int sleepTime = 10;
+    private static final int port = 40000; // 40000 = session, 50000 = channel
 
     public static void main(String[] args) throws InterruptedException {
         init(ClientApplication::receive);
@@ -30,6 +32,9 @@ public class ClientApplication {
             clients.forEach(client -> {
                 //create move message
                 int index = clients.indexOf(client);
+
+//                if (index % 2 == 0) return;
+
                 String userId = "client" + index;
                 String sessionId = "session" + index;
                 Message message = client.getLastMessage();
@@ -125,5 +130,11 @@ public class ClientApplication {
 
         System.out.println("clients count : " + clients.size());
         Thread.sleep(3000);
+    }
+
+    public static void httpServerTest() {
+        HttpServer.create().port(8080).route(routes -> routes.get("/test/{param}", (request, reponse) -> reponse.sendString(request.receive().asString()))).bindNow();
+
+        HttpClient.create().port(8080).get().uri("/test/aaa").responseContent().aggregate().asString().block();
     }
 }

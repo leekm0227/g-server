@@ -14,6 +14,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import reactor.netty.resources.ConnectionProvider;
+import reactor.netty.resources.LoopResources;
 import reactor.netty.tcp.TcpServer;
 
 import java.time.Duration;
@@ -34,7 +35,9 @@ public class SessionServer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+//        LoopResources loop = LoopResources.create("session-loop", 1, 4, true);
         TcpServer.create()
+//                .runOn(loop)
                 .option(ChannelOption.SO_LINGER, 0)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.TCP_NODELAY, true)

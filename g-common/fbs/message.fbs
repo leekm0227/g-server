@@ -4,6 +4,7 @@ namespace com.leegm.common.protocol;
 // enum ============================================================================
 enum Result:byte{
 	SUCCESS,
+	ERROR_RUNTIME,
 	ERROR_INVALID_MESSAGE,
 	ERROR_HANDLER_NOT_FOUND,
 	ERROR_CLS_NOT_FOUND
