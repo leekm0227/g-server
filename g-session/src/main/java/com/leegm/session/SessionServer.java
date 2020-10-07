@@ -1,55 +1,34 @@
 package com.leegm.session;
 
-import com.leegm.common.util.Dispatcher;
-import com.leegm.session.publisher.SessionPublisher;
-import com.leegm.session.util.ConnManager;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import reactor.netty.resources.ConnectionProvider;
-import reactor.netty.resources.LoopResources;
-import reactor.netty.tcp.TcpServer;
+import org.springframework.web.reactive.HandlerMapping;
+import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.reactive.socket.WebSocketHandler;
 
-import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
-public class SessionServer implements ApplicationRunner {
+public class SessionServer {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionServer.class);
 
     @Autowired
-    ConnManager connManager;
+    private WebSocketHandler webSocketHandler;
 
-    @Autowired
-    Dispatcher dispatcher;
+    @Bean
+    public HandlerMapping webSocketMapping() {
+        Map<String, WebSocketHandler> map = new HashMap<>();
+        map.put("/conn", webSocketHandler);
 
-    @Autowired
-    SessionPublisher sessionPublisher;
-
-    @Override
-    public void run(ApplicationArguments args) {
-//        LoopResources loop = LoopResources.create("session-loop", 1, 4, true);
-        TcpServer.create()
-//                .runOn(loop)
-                .option(ChannelOption.SO_LINGER, 0)
-                .option(ChannelOption.SO_REUSEADDR, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .port(40000)
-                .metrics(true)
-                .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receive()
-                        .asByteArray()
-                        .log("session server")
-                        .map(dispatcher::handle)
-                        .mergeWith(sessionPublisher.subscribe())
-                ))
-                .bindUntilJavaShutdown(Duration.ofSeconds(30), null);
+        SimpleUrlHandlerMapping simpleUrlHandlerMapping = new SimpleUrlHandlerMapping();
+        simpleUrlHandlerMapping.setUrlMap(map);
+        simpleUrlHandlerMapping.setOrder(1);
+        return simpleUrlHandlerMapping;
     }
 }
 
