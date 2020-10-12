@@ -35,9 +35,7 @@ public class ChannelServer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         TcpServer.create()
-                .option(ChannelOption.SO_LINGER, 0)
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .option(ChannelOption.TCP_NODELAY, true)
                 .port(50000)
                 .metrics(true)
                 .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receive()

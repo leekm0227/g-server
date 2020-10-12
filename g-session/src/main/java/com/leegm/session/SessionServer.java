@@ -35,12 +35,9 @@ public class SessionServer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-//        LoopResources loop = LoopResources.create("session-loop", 1, 4, true);
         TcpServer.create()
-//                .runOn(loop)
-                .option(ChannelOption.SO_LINGER, 0)
+//                .runOn(LoopResources.create("session-loop", 2, 8, true))
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .option(ChannelOption.TCP_NODELAY, true)
                 .port(40000)
                 .metrics(true)
                 .handle((inbound, outbound) -> outbound.sendByteArray(inbound.receive()

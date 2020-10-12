@@ -2,6 +2,7 @@ package com.leegm.session.client;
 
 import com.leegm.session.publisher.ChannelPublisher;
 import com.leegm.session.publisher.SessionPublisher;
+import io.netty.channel.ChannelOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.netty.resources.ConnectionProvider;
@@ -30,6 +31,7 @@ public class ChannelClient {
         TcpClient.create(provider)
                 .host(host)
                 .port(port)
+                .option(ChannelOption.TCP_NODELAY, true)
                 .handle((in, out) -> {
                     in.receive().asByteArray().log("channel client").subscribe(bytes -> sessionPublisher.onNext(bytes));
                     return out.sendByteArray(channelPublisher.subscribe());
