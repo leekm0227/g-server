@@ -8,10 +8,12 @@ version = '0.0.1'
 sourceCompatibility = '1.8'
 
 repositories {
+    maven { url 'https://repo.spring.io/milestone' }
     mavenCentral()
 }
 
 dependencies {
+    implementation 'io.projectreactor.netty:reactor-netty:0.9.5.RELEASE'
     implementation 'com.google.flatbuffers:flatbuffers-java:1.12.0'
     implementation 'org.apache.commons:commons-lang3:3.7'
     testCompile group: 'junit', name: 'junit', version: '4.12'

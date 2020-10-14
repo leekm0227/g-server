@@ -3,6 +3,8 @@ package com.leegm.client;
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.leegm.common.protocol.Object;
 import com.leegm.common.protocol.*;
+import com.leegm.common.util.ProtocolEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,29 +18,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class ClientTask {
 
+    @Autowired
+    ProtocolEncoder protocolEncoder;
+
     private static final List<Client> clients = new ArrayList<>();
-    private static final AtomicInteger count = new AtomicInteger(0);
-    private static final int clientSize = 1000;
+    private static final AtomicInteger clientCount = new AtomicInteger(0);
+    private static final AtomicInteger receiveCount = new AtomicInteger(0);
+    private static final int clientSize = 2000;
+    private static final int rateMillis = 50;
     private static final int port = 40000; // 40000 = session, 50000 = channel
 
     @PostConstruct
     void init() {
         for (int i = 0; i < clientSize; i++) {
-            clients.add(new Client(i, "127.0.0.1", port, ClientTask::receive));
+            clients.add(new Client(i, clientCount, protocolEncoder, "127.0.0.1", port, ClientTask::receive));
         }
     }
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = rateMillis)
     public void task() {
         clients.forEach(ClientTask::sendAction);
     }
 
     private static void receive(Client client, Message message) {
+        System.out.println("receive count : " + receiveCount.incrementAndGet());
+
         switch (message.payloadType()) {
             case Payload.Chat:
-                System.out.println("msg" + count.addAndGet(1) + " type : " + message.payloadType());
             case Payload.Zone:
-
                 break;
         }
     }
@@ -96,6 +103,6 @@ public class ClientTask {
         int objectOffset = Object.endObject(builder);
         int actionOffset = Action.createAction(builder, objectOffset);
         builder.finish(Message.createMessage(builder, contextOffset, Method.NONE, Result.SUCCESS, Payload.Action, actionOffset));
-        client.send(Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray())).getByteBuffer().array());
+        client.send(Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray())));
     }
 }

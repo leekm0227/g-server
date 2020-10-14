@@ -6,24 +6,28 @@ import com.leegm.common.model.ZoneBean;
 import com.leegm.common.protocol.Object;
 import com.leegm.common.protocol.*;
 
-public final class Converter {
+import java.nio.ByteBuffer;
 
-    public static byte[] response(Context context, byte result) {
+import static com.leegm.common.util.Const.BUFF_SIZE;
+
+public final class MessageConverter {
+
+    public static Message response(Context context, byte result) {
         if (result > 0) {
             System.out.println("response error : " + Result.name(result));
         }
 
-        FlatBufferBuilder builder = new FlatBufferBuilder();
+        FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
         int userIdOffset = builder.createString(context != null ? context.userId() : "");
         int sessionIdOffset = builder.createString(context != null ? context.sessionId() : "");
         int contextOffset = Context.createContext(builder, userIdOffset, sessionIdOffset);
         builder.finish(Message.createMessage(builder, contextOffset, Method.NONE, result, Payload.NONE, 0));
 
-        return builder.sizedByteArray();
+        return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
     }
 
-    public static byte[] toZone(ZoneBean zoneBean) {
-        FlatBufferBuilder builder = new FlatBufferBuilder();
+    public static Message toZone(ZoneBean zoneBean) {
+        FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
         int[] arrObject = new int[zoneBean.getObjects().size()];
 
         int index = 0;
@@ -60,11 +64,11 @@ public final class Converter {
         int messageOffset = Message.createMessage(builder, 0, Method.NONE, Result.SUCCESS, Payload.Zone, zoneOffset);
         builder.finish(messageOffset);
 
-        return builder.sizedByteArray();
+        return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
     }
 
-    public static byte[] toChat(String topic, String userId, String name, String content) {
-        FlatBufferBuilder builder = new FlatBufferBuilder();
+    public static Message toChat(String topic, String userId, String name, String content) {
+        FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
         int topicOffset = builder.createString(topic);
         int userIdOffset = builder.createString(userId);
         int nameOffset = builder.createString(name);
@@ -73,6 +77,6 @@ public final class Converter {
         int messageOffset = Message.createMessage(builder, 0, Method.NONE, Result.SUCCESS, Payload.Chat, chatOffset);
         builder.finish(messageOffset);
 
-        return builder.sizedByteArray();
+        return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
     }
 }

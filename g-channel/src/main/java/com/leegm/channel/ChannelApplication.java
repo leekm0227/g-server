@@ -1,6 +1,7 @@
 package com.leegm.channel;
 
 import com.leegm.common.util.Dispatcher;
+import com.leegm.common.util.ProtocolEncoder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,5 +18,10 @@ public class ChannelApplication {
     @Bean
     public Dispatcher dispatcher() {
         return new Dispatcher();
+    }
+
+    @Bean
+    public ProtocolEncoder protocolEncoder() {
+        return new ProtocolEncoder();
     }
 }

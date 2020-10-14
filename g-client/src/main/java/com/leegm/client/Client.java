@@ -2,48 +2,53 @@ package com.leegm.client;
 
 
 import com.leegm.common.protocol.Message;
+import com.leegm.common.util.ProtocolDecoder;
+import com.leegm.common.util.ProtocolEncoder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.tcp.TcpClient;
 
-import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class Client {
 
-    private final UnicastProcessor<byte[]> publisher;
-    private final Flux<byte[]> flux;
+    private final UnicastProcessor<Message> publisher;
+    private final Flux<Message> flux;
     private Message lastMessage;
     public int index;
 
-    public Client(int index, String host, int port, BiConsumer<Client, Message> receive) {
+    public Client(int index, AtomicInteger count, ProtocolEncoder protocolEncoder, String host, int port, BiConsumer<Client, Message> receive) {
         this.index = index;
         publisher = UnicastProcessor.create();
         flux = publisher.replay(1).autoConnect(0);
-        ConnectionProvider provider = ConnectionProvider.builder("fixed").maxConnections(5000).build();
 
-        TcpClient.create(provider)
+        TcpClient.create(ConnectionProvider.builder("fixed").maxConnections(5000).build())
                 .host(host)
                 .port(port)
+                .doOnConnected(connection -> {
+                    connection.addHandler(new ProtocolDecoder());
+                    connection.addHandler(protocolEncoder);
+                    System.out.println("client count : " + count.incrementAndGet());
+                })
+                .doOnDisconnected(connection -> {
+                    System.out.println("client count : " + count.decrementAndGet());
+                })
                 .handle((in, out) -> {
-                    in.receive().asByteArray().subscribe(bytes -> {
-                        try {
-                            lastMessage = Message.getRootAsMessage(ByteBuffer.wrap(bytes));
-                            receive.accept(this, lastMessage);
-                        } catch (Exception ignored) {
-                        }
+                    in.receiveObject().ofType(Message.class).subscribe(message -> {
+                        lastMessage = message;
+                        receive.accept(this, lastMessage);
                     });
-                    return out.sendByteArray(flux);
+                    return out.sendObject(flux);
                 })
                 .connectNow();
 
 
     }
 
-    public void send(byte[] bytes) {
-        publisher.onNext(bytes);
+    public void send(Message message) {
+        publisher.onNext(message);
     }
 
     public Message getLastMessage() {

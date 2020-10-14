@@ -1,10 +1,7 @@
 package com.leegm.session.handler;
 
 import com.leegm.common.handler.AbstractHandler;
-import com.leegm.common.protocol.Chat;
-import com.leegm.common.protocol.Context;
-import com.leegm.common.protocol.Payload;
-import com.leegm.common.protocol.Result;
+import com.leegm.common.protocol.*;
 import com.leegm.common.util.Dispatcher;
 import com.leegm.session.publisher.ChannelPublisher;
 import org.slf4j.Logger;
@@ -32,7 +29,9 @@ public class ChatHandler extends AbstractHandler<Chat> {
     }
 
     @Override
-    public byte[] handle(Context context, Chat chat) {
+    public Message handle(Context context, Chat chat) {
+        // valid chat
+
         channelPublisher.onNext(chat.getByteBuffer().array());
         return response(context, Result.SUCCESS);
     }

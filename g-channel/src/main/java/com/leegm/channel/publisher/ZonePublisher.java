@@ -2,16 +2,16 @@ package com.leegm.channel.publisher;
 
 import com.leegm.common.model.ObjectBean;
 import com.leegm.common.model.ZoneBean;
+import com.leegm.common.protocol.Message;
 import com.leegm.common.protocol.Object;
 import com.leegm.common.protocol.Type;
 import com.leegm.common.util.Const;
-import com.leegm.common.util.Converter;
+import com.leegm.common.util.MessageConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
-import reactor.core.scheduler.Schedulers;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
@@ -52,8 +52,8 @@ public class ZonePublisher {
         zonePublisher.onNext(zone);
     }
 
-    public Flux<byte[]> subscribe() {
-        return zoneFlux.map(Converter::toZone);
+    public Flux<Message> subscribe() {
+        return zoneFlux.map(MessageConverter::toZone);
     }
 
     private void log() {
