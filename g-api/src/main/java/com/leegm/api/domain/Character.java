@@ -5,24 +5,23 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document
-@SuperBuilder
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@Builder
 public class Character extends AbstractDomain {
 
-    String name;
+    @Indexed(unique = true)
+    String nickname;
 
-    @Builder.Default
+    @DBRef
+    String AccountId;
+
     int level = 1;
-
-    @Builder.Default
     int exp = 0;
-
-    @Builder.Default
     float[] pos = new float[]{0, 0, 0};
 
     public float getPos(int pos) {

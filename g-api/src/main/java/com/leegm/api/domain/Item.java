@@ -1,5 +1,6 @@
 package com.leegm.api.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -8,11 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document
-@SuperBuilder
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@Builder
 public class Item extends AbstractDomain {
 
-    int tid;
+    int templateId;
     long amount;
 }

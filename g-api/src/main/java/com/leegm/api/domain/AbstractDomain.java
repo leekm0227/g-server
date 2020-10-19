@@ -1,24 +1,16 @@
 package com.leegm.api.domain;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Data
-@SuperBuilder
-@NoArgsConstructor
+@Getter
 abstract class AbstractDomain implements Serializable {
 
-    @Id
-    @Builder.Default
-    protected String id = "";
+    protected String id;
 
     @CreatedDate
     protected LocalDateTime createAt;
