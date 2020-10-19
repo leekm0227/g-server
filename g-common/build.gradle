@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
     id 'java'
     id 'maven'
@@ -27,6 +29,11 @@ task execGenerate {
 
     exec {
         workingDir "fbs/flatbuffer"
-        commandLine 'cmd', '/c', 'gen_java.bat'
+
+        if(Os.isFamily(Os.FAMILY_WINDOWS)){
+            commandLine 'cmd', '/c', 'gen_java.bat'
+        }else{
+            commandLine 'sh', 'gen_java.sh'
+        }
     }
 }
