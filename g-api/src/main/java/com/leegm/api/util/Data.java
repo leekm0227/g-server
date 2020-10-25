@@ -4,7 +4,11 @@ import com.leegm.api.domain.Account;
 import com.leegm.api.repository.AccountRepository;
 import com.leegm.api.repository.CharacterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.CollectionOptions;
+import org.springframework.data.mongodb.core.MongoJsonSchemaCreator;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.schema.MongoJsonSchema;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -26,7 +30,15 @@ public class Data {
     public void init() {
         accountRepository.deleteAll();
         characterRepository.deleteAll();
-        testCUDate();
+//        testCUDate();
+        getSchema();
+    }
+
+    void getSchema(){
+        MongoJsonSchema schema = MongoJsonSchemaCreator.create(mongoTemplate.getConverter())
+                .createSchemaFor(Account.class);
+
+        mongoTemplate.createCollection(Account.class, CollectionOptions.empty().schema(schema));
     }
 
     void testCUDate() {

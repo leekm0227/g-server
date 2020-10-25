@@ -13,7 +13,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         while (true) {
-            if (in.readableBytes() < 8) {
+            if (in.readableBytes() < 4) {
                 return;
             }
 

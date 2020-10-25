@@ -38,7 +38,7 @@ public class ChannelServer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         TcpServer.create()
-                .runOn(LoopResources.create("channel-loop", 4, 8, true))
+//                .runOn(LoopResources.create("channel-loop", 4, 8, true))
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_LINGER, 0)

@@ -24,8 +24,8 @@ public class ClientTask {
     private static final List<Client> clients = new ArrayList<>();
     private static final AtomicInteger clientCount = new AtomicInteger(0);
     private static final AtomicInteger receiveCount = new AtomicInteger(0);
-    private static final int clientSize = 2000;
-    private static final int rateMillis = 50;
+    private static final int clientSize = 1;
+    private static final int rateMillis = 1000;
     private static final int port = 40000; // 40000 = session, 50000 = channel
 
     @PostConstruct
@@ -41,8 +41,8 @@ public class ClientTask {
     }
 
     private static void receive(Client client, Message message) {
-        System.out.println("receive count : " + receiveCount.incrementAndGet());
-
+//        System.out.println("receive count : " + receiveCount.incrementAndGet());
+//        System.out.println(message.getByteBuffer().array().length);
         switch (message.payloadType()) {
             case Payload.Chat:
             case Payload.Zone:
