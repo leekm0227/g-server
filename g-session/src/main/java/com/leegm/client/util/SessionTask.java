@@ -1,4 +1,4 @@
-package com.leegm.session.util;
+package com.leegm.client.util;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

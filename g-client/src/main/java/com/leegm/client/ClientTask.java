@@ -24,14 +24,14 @@ public class ClientTask {
     private static final List<Client> clients = new ArrayList<>();
     private static final AtomicInteger clientCount = new AtomicInteger(0);
     private static final AtomicInteger receiveCount = new AtomicInteger(0);
-    private static final int clientSize = 1;
-    private static final int rateMillis = 1000;
+    private static final int clientSize = 500;
+    private static final int rateMillis = 100;
     private static final int port = 40000; // 40000 = session, 50000 = channel
 
     @PostConstruct
     void init() {
         for (int i = 0; i < clientSize; i++) {
-            clients.add(new Client(i, clientCount, protocolEncoder, "127.0.0.1", port, ClientTask::receive));
+//            clients.add(new Client(i, clientCount, protocolEncoder, "127.0.0.1", port, ClientTask::receive));
         }
     }
 

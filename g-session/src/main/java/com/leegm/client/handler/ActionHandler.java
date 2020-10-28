@@ -1,9 +1,9 @@
-package com.leegm.session.handler;
+package com.leegm.client.handler;
 
 import com.leegm.common.handler.AbstractHandler;
 import com.leegm.common.protocol.*;
 import com.leegm.common.util.Dispatcher;
-import com.leegm.session.publisher.ChannelPublisher;
+import com.leegm.client.publisher.ChannelPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

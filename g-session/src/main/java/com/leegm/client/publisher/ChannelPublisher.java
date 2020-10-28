@@ -1,4 +1,4 @@
-package com.leegm.session.publisher;
+package com.leegm.client.publisher;
 
 import com.leegm.common.protocol.Message;
 import org.slf4j.Logger;

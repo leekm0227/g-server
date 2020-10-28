@@ -9,6 +9,7 @@ import reactor.core.publisher.UnicastProcessor;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.tcp.TcpClient;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
@@ -18,9 +19,13 @@ public class Client {
     private final Flux<Message> flux;
     private Message lastMessage;
     public int index;
+    public int receiveCount = 0;
+    public CountDownLatch latch;
 
-    public Client(int index, AtomicInteger count, ProtocolEncoder protocolEncoder, String host, int port, BiConsumer<Client, Message> receive) {
+
+    public Client(int index, AtomicInteger count, ProtocolEncoder protocolEncoder, CountDownLatch latch, String host, int port, BiConsumer<Client, Message> receive) {
         this.index = index;
+        this.latch = latch;
         publisher = UnicastProcessor.create();
         flux = publisher.replay(1).autoConnect(0);
 
@@ -43,8 +48,6 @@ public class Client {
                     return out.sendObject(flux);
                 })
                 .connectNow();
-
-
     }
 
     public void send(Message message) {

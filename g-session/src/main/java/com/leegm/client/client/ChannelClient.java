@@ -1,10 +1,10 @@
-package com.leegm.session.client;
+package com.leegm.client.client;
 
 import com.leegm.common.protocol.Message;
 import com.leegm.common.util.ProtocolDecoder;
 import com.leegm.common.util.ProtocolEncoder;
-import com.leegm.session.publisher.ChannelPublisher;
-import com.leegm.session.publisher.SessionPublisher;
+import com.leegm.client.publisher.ChannelPublisher;
+import com.leegm.client.publisher.SessionPublisher;
 import io.netty.channel.ChannelOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

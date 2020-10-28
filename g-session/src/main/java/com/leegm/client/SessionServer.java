@@ -1,10 +1,10 @@
-package com.leegm.session;
+package com.leegm.client;
 
 import com.leegm.common.protocol.Message;
 import com.leegm.common.util.Dispatcher;
 import com.leegm.common.util.ProtocolDecoder;
 import com.leegm.common.util.ProtocolEncoder;
-import com.leegm.session.publisher.SessionPublisher;
+import com.leegm.client.publisher.SessionPublisher;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import reactor.netty.resources.LoopResources;
 import reactor.netty.tcp.TcpServer;
 
 import java.time.Duration;
