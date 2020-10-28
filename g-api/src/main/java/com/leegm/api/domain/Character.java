@@ -18,7 +18,7 @@ public class Character extends AbstractDomain {
     String nickname;
 
     @DBRef
-    String AccountId;
+    Account Account;
 
     int level = 1;
     int exp = 0;
