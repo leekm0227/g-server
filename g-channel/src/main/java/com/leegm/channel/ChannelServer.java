@@ -50,7 +50,7 @@ public class ChannelServer implements ApplicationRunner {
                 })
                 .handle((inbound, outbound) -> outbound.sendObject(inbound.receiveObject()
                         .ofType(Message.class)
-                        .log("channel server")
+//                        .log("channel server")
                         .map(dispatcher::handle)
                         .mergeWith(chatPublisher.subscribe())
                         .mergeWith(zonePublisher.subscribe())

@@ -19,11 +19,11 @@ public class Client {
     private final Flux<Message> flux;
     private Message lastMessage;
     public int index;
-    public int receiveCount = 0;
+    public float currentPosX = 0;
     public CountDownLatch latch;
 
 
-    public Client(int index, AtomicInteger count, ProtocolEncoder protocolEncoder, CountDownLatch latch, String host, int port, BiConsumer<Client, Message> receive) {
+    public Client(int index, AtomicInteger count, ProtocolEncoder protocolEncoder, CountDownLatch clientInitLatch, CountDownLatch latch, String host, int port, BiConsumer<Client, Message> receive) {
         this.index = index;
         this.latch = latch;
         publisher = UnicastProcessor.create();
@@ -36,6 +36,7 @@ public class Client {
                     connection.addHandler(new ProtocolDecoder());
                     connection.addHandler(protocolEncoder);
                     System.out.println("client count : " + count.incrementAndGet());
+                    clientInitLatch.countDown();
                 })
                 .doOnDisconnected(connection -> {
                     System.out.println("client count : " + count.decrementAndGet());

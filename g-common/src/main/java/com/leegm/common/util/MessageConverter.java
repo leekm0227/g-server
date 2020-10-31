@@ -28,7 +28,7 @@ public final class MessageConverter {
 
     public static Message toZone(ZoneBean zoneBean) {
         FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
-        int[] arrObject = new int[zoneBean.getObjects().size()];
+        int[] arrObject = new int[zoneBean.getObjects().length];
 
         int index = 0;
         for (ObjectBean object : zoneBean.getObjects()) {

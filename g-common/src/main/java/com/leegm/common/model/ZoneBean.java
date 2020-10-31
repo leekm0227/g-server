@@ -6,7 +6,7 @@ import java.util.Collection;
 public class ZoneBean extends AbstractBean {
 
     private int zoneId;
-    private Collection<ObjectBean> objects;
+    private ObjectBean[] objects;
 
     public int getZoneId() {
         return zoneId;
@@ -16,20 +16,11 @@ public class ZoneBean extends AbstractBean {
         this.zoneId = zoneId;
     }
 
-    public ZoneBean(Collection<ObjectBean> objects) {
+    public ZoneBean(ObjectBean[] objects) {
         this.objects = objects;
     }
 
-    public ZoneBean() {
-        this.objects = new ArrayList<>();
-    }
-
-    public void addObject(ObjectBean object) {
-        objects.add(object);
-    }
-
-    public Collection<ObjectBean> getObjects() {
+    public ObjectBean[] getObjects() {
         return objects;
     }
-
 }

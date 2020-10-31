@@ -27,31 +27,46 @@ public class ClientApplicationTests {
     private static final List<Client> clients = new ArrayList<>();
     private static final AtomicInteger clientCount = new AtomicInteger(0);
     private static final AtomicInteger receiveCount = new AtomicInteger(0);
-    private static final int clientSize = 500;
-    private static final int rateMillis = 100;
-    private static final int port = 40000; // 40000 = session, 50000 = channel
+    private static final int clientSize = 100;
+    private static final int rateMillis = 2;
+    private static final int port = 40000; // session
+//    private static final int port = 50000; // channel
     private final CountDownLatch latch = new CountDownLatch(clientSize);
 
     @Test
     void test() throws InterruptedException {
+        CountDownLatch clientInitLatch = new CountDownLatch(clientSize);
+
         for (int i = 0; i < clientSize; i++) {
-            clients.add(new Client(i, clientCount, protocolEncoder, latch, "127.0.0.1", port, ClientApplicationTests::callBack));
+            clients.add(new Client(i, clientCount, protocolEncoder, clientInitLatch, latch, "127.0.0.1", port, ClientApplicationTests::callBack));
         }
+
+        clientInitLatch.await();
 
         long start = System.currentTimeMillis();
         logger.info("start : {}", start);
-        clients.forEach(ClientApplicationTests::send);
+
+        clients.forEach(client -> {
+            ClientApplicationTests.send(client);
+
+            try {
+                Thread.sleep(rateMillis);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
 
         latch.await();
         long end = System.currentTimeMillis();
         logger.info("finish : {}", end);
         logger.info("result : {}", (end - start));
+        logger.info("==========");
     }
 
     private static void send(Client client) {
         String userId = "client" + client.index;
         String sessionId = "session" + client.index;
-        int x = client.receiveCount++;
+        float x = client.currentPosX + 1;
 
         FlatBufferBuilder builder = new FlatBufferBuilder();
         int userIdOffset = builder.createString(userId);
@@ -67,15 +82,23 @@ public class ClientApplicationTests {
     }
 
     private static void callBack(Client client, Message message) {
-        if(client.receiveCount >= 1000){
-            client.latch.countDown();
-        }
+        switch (message.payloadType()) {
+            case Payload.Chat:
+            case Payload.Zone:
+                Zone zone = (Zone) message.payload(new Zone());
+                for (int i = 0; i < zone.objectsLength(); i++) {
+                    if (zone.objects(i).objectId() == client.index) {
+                        logger.info("client{} pos x : {}", client.index, zone.objects(i).position().x());
+                        client.currentPosX = zone.objects(i).position().x();
 
-        try {
-            Thread.sleep(rateMillis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                        if (zone.objects(i).position().x() > 100) {
+                            client.latch.countDown();
+                        }
+
+                        send(client);
+                    }
+                }
+                break;
         }
-        send(client);
     }
 }

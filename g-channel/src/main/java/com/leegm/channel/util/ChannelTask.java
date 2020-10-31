@@ -1,6 +1,6 @@
 package com.leegm.channel.util;
 
-import com.leegm.channel.publisher.ChatPublisher;
+import com.leegm.channel.publisher.ZonePublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,13 +10,11 @@ import org.springframework.stereotype.Component;
 public class ChannelTask {
 
     @Autowired
-    ChatPublisher chatPublisher;
+    ZonePublisher zonePublisher;
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 100)
     public void task() {
-//        Message msg = Message.getRootAsMessage(ByteBuffer.wrap(Converter.toChat("testcid", "testoid", "content")));
-//        Chat chat = (Chat) msg.payload(new Chat());
-//        chatPublisher.onNext(chat);
+        zonePublisher.onNext();
     }
 }
 
