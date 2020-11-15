@@ -15,6 +15,7 @@ import reactor.core.publisher.UnicastProcessor;
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 public class ZonePublisher {
@@ -23,6 +24,7 @@ public class ZonePublisher {
     private ConcurrentLinkedQueue<ObjectBean> objectBeans;
     private UnicastProcessor<ZoneBean> zonePublisher;
     private Flux<ZoneBean> zoneFlux;
+    private final AtomicBoolean update = new AtomicBoolean();
 
     @PostConstruct
     public void init() {
@@ -31,7 +33,7 @@ public class ZonePublisher {
         zoneFlux = zonePublisher.replay(1).autoConnect(0);
     }
 
-    public void onNext(Object object) {
+    public void update(Object object) {
         Optional<ObjectBean> updated = objectBeans.stream()
                 .filter(x -> x.getObjectId() == object.objectId())
                 .map(targetBean -> {
@@ -43,18 +45,24 @@ public class ZonePublisher {
         if (!updated.isPresent()) {
             objectBeans.add(new ObjectBean("name", (int) object.objectId(), Type.PLAYER, new float[]{0, 0, 0}));
         }
+
+        update.set(true);
     }
 
-    public int onNext() {
+    public void update() {
         zonePublisher.onNext(new ZoneBean((objectBeans.toArray(new ObjectBean[0]))));
-        return objectBeans.hashCode();
     }
 
     public Flux<Message> subscribe() {
         return zoneFlux.map(MessageConverter::toZone);
     }
 
-    public boolean isUpdate(int hash){
-        return objectBeans.hashCode() == hash;
+    public boolean isUpdate(){
+        if(update.get()){
+            update.set(false);
+            return true;
+        }
+
+        return false;
     }
 }

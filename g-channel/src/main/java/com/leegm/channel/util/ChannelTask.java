@@ -16,13 +16,10 @@ public class ChannelTask {
     @Autowired
     ZonePublisher zonePublisher;
 
-    private int hash;
-
     @Scheduled(fixedRate = 100)
     public void task() {
-        if (zonePublisher.isUpdate(hash)) {
-            logger.info("update hash : {}", hash);
-            hash = zonePublisher.onNext();
+        if (zonePublisher.isUpdate()) {
+            zonePublisher.update();
         }
     }
 }

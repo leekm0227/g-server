@@ -2,6 +2,8 @@ package com.leegm.channel;
 
 import com.leegm.channel.publisher.ChatPublisher;
 import com.leegm.channel.publisher.ZonePublisher;
+import com.leegm.common.util.ProtocolDecoder;
+import com.leegm.common.util.ProtocolEncoder;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,9 @@ public class ChannelServerOutbound implements ApplicationRunner {
     @Autowired
     ZonePublisher zonePublisher;
 
+    @Autowired
+    ProtocolEncoder protocolEncoder;
+
     @Override
     public void run(ApplicationArguments args) {
         TcpServer.create()
@@ -32,6 +37,10 @@ public class ChannelServerOutbound implements ApplicationRunner {
                 .option(ChannelOption.SO_LINGER, 0)
                 .port(51000)
                 .metrics(true)
+                .doOnConnection(connection -> {
+                    connection.addHandler(new ProtocolDecoder());
+                    connection.addHandler(protocolEncoder);
+                })
                 .handle((inbound, outbound) -> {
                     inbound.receive().subscribe();
                     return outbound.sendObject(zonePublisher.subscribe().mergeWith(chatPublisher.subscribe()));
