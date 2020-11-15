@@ -27,8 +27,8 @@ public class ClientApplicationTests {
     private static final List<Client> clients = new ArrayList<>();
     private static final AtomicInteger clientCount = new AtomicInteger(0);
     private static final AtomicInteger receiveCount = new AtomicInteger(0);
-    private static final int clientSize = 100;
-    private static final int rateMillis = 2;
+    private static final int clientSize = 8;
+    private static final int rateMillis = 100;
     private static final int port = 40000; // session
 //    private static final int port = 50000; // channel
     private final CountDownLatch latch = new CountDownLatch(clientSize);
@@ -91,7 +91,7 @@ public class ClientApplicationTests {
                         logger.info("client{} pos x : {}", client.index, zone.objects(i).position().x());
                         client.currentPosX = zone.objects(i).position().x();
 
-                        if (zone.objects(i).position().x() > 100) {
+                        if (zone.objects(i).position().x() == 100) {
                             client.latch.countDown();
                         }
 

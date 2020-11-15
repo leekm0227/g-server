@@ -1,7 +1,5 @@
 package com.leegm.channel;
 
-import com.leegm.channel.publisher.ChatPublisher;
-import com.leegm.channel.publisher.ZonePublisher;
 import com.leegm.common.protocol.Message;
 import com.leegm.common.util.Dispatcher;
 import com.leegm.common.util.ProtocolDecoder;
@@ -13,15 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import reactor.netty.resources.LoopResources;
 import reactor.netty.tcp.TcpServer;
 
 import java.time.Duration;
 
 @Component
-public class ChannelServer implements ApplicationRunner {
+public class ChannelServerInbound implements ApplicationRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChannelServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChannelServerInbound.class);
 
     @Autowired
     ProtocolEncoder protocolEncoder;
@@ -29,16 +26,9 @@ public class ChannelServer implements ApplicationRunner {
     @Autowired
     Dispatcher dispatcher;
 
-    @Autowired
-    ChatPublisher chatPublisher;
-
-    @Autowired
-    ZonePublisher zonePublisher;
-
     @Override
     public void run(ApplicationArguments args) {
         TcpServer.create()
-//                .runOn(LoopResources.create("channel-loop", 4, 8, true))
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_LINGER, 0)
@@ -48,13 +38,10 @@ public class ChannelServer implements ApplicationRunner {
                     connection.addHandler(new ProtocolDecoder());
                     connection.addHandler(protocolEncoder);
                 })
-                .handle((inbound, outbound) -> outbound.sendObject(inbound.receiveObject()
-                        .ofType(Message.class)
-//                        .log("channel server")
-                        .map(dispatcher::handle)
-                        .mergeWith(chatPublisher.subscribe())
-                        .mergeWith(zonePublisher.subscribe())
-                ))
+                .handle((inbound, outbound) -> {
+                    inbound.receiveObject().log("channel server").ofType(Message.class).map(dispatcher::handle);
+                    return outbound.neverComplete();
+                })
                 .bindNow(Duration.ofSeconds(30));
     }
 }

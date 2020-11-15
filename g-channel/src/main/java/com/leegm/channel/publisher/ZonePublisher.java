@@ -45,11 +45,16 @@ public class ZonePublisher {
         }
     }
 
-    public void onNext() {
+    public int onNext() {
         zonePublisher.onNext(new ZoneBean((objectBeans.toArray(new ObjectBean[0]))));
+        return objectBeans.hashCode();
     }
 
     public Flux<Message> subscribe() {
         return zoneFlux.map(MessageConverter::toZone);
+    }
+
+    public boolean isUpdate(int hash){
+        return objectBeans.hashCode() == hash;
     }
 }
