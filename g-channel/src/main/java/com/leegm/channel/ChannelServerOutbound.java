@@ -33,7 +33,7 @@ public class ChannelServerOutbound implements ApplicationRunner {
                 .port(51000)
                 .metrics(true)
                 .handle((inbound, outbound) -> {
-                    inbound.receiveObject().subscribe();
+                    inbound.receive().subscribe();
                     return outbound.sendObject(zonePublisher.subscribe().mergeWith(chatPublisher.subscribe()));
                 })
                 .bindNow(Duration.ofSeconds(30));

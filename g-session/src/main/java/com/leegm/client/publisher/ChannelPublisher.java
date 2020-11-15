@@ -21,7 +21,7 @@ import java.util.Random;
 public class ChannelPublisher {
 
     private static final Logger logger = LoggerFactory.getLogger(ChannelPublisher.class);
-    List<UnicastProcessor<Message>> clients = new ArrayList<>();
+    List<UnicastProcessor<byte[]>> clients = new ArrayList<>();
     private String host;
     private int port;
     private int size = 8;
@@ -31,12 +31,11 @@ public class ChannelPublisher {
     public void init() {
         random = new Random();
         host = "127.0.0.1";
-//        host = "192.168.0.17";
         port = 50000;
 
         for (int i = 0; i < size; i++) {
-            UnicastProcessor<Message> channelPublisher = UnicastProcessor.create();
-            Flux<Message> channelFlux = channelPublisher.replay(1).autoConnect(0);
+            UnicastProcessor<byte[]> channelPublisher = UnicastProcessor.create();
+            Flux<byte[]> channelFlux = channelPublisher.replay(1).autoConnect(0);
             clients.add(channelPublisher);
 
             TcpClient.create(ConnectionProvider.builder("session").build())
@@ -44,8 +43,8 @@ public class ChannelPublisher {
                     .port(port)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .handle((in, out) -> {
-                        in.receiveObject().subscribe();
-                        return out.sendObject(channelFlux.log("channel send"));
+                        in.receive().subscribe();
+                        return out.sendByteArray(channelFlux.log("channel send"));
                     })
                     .connectNow(Duration.ofSeconds(30));
         }
@@ -53,6 +52,6 @@ public class ChannelPublisher {
 
     public void onNext(byte[] bytes) {
         logger.info("channel publisher onnext : {}", bytes);
-        clients.get(random.nextInt(size)).onNext(Message.getRootAsMessage(ByteBuffer.wrap(bytes)));
+        clients.get(random.nextInt(size)).onNext(bytes);
     }
 }

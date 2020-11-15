@@ -39,7 +39,10 @@ public class ChannelServerInbound implements ApplicationRunner {
                     connection.addHandler(protocolEncoder);
                 })
                 .handle((inbound, outbound) -> {
-                    inbound.receiveObject().log("channel server").ofType(Message.class).map(dispatcher::handle);
+                    inbound.receiveObject().ofType(Message.class).subscribe(message -> {
+                        logger.info("receive msg : {}", message);
+                        dispatcher.handle(message);
+                    });
                     return outbound.neverComplete();
                 })
                 .bindNow(Duration.ofSeconds(30));
