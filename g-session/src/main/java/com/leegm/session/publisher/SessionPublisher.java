@@ -1,4 +1,4 @@
-package com.leegm.client.publisher;
+package com.leegm.session.publisher;
 
 import com.leegm.common.protocol.Message;
 import org.slf4j.Logger;
@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
 
 import javax.annotation.PostConstruct;
+import java.nio.ByteBuffer;
 
 @Component
 public class SessionPublisher {
@@ -24,6 +25,10 @@ public class SessionPublisher {
 
     public void onNext(Message message) {
         sessionPublisher.onNext(message);
+    }
+
+    public void onNext(byte[] bytes) {
+        sessionPublisher.onNext(Message.getRootAsMessage(ByteBuffer.wrap(bytes)));
     }
 
     public Flux<Message> subscribe() {

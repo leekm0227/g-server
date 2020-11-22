@@ -30,7 +30,7 @@ public class ClientApplicationTests {
     private static final int clientSize = 1000;
     private static final int rateMillis = 10;
     private static final int port = 40000; // session
-//    private static final int port = 50000; // channel
+    //    private static final int port = 50000; // channel
     private final CountDownLatch latch = new CountDownLatch(clientSize);
 
     @Test
@@ -84,6 +84,19 @@ public class ClientApplicationTests {
     private static void callBack(Client client, Message message) {
         switch (message.payloadType()) {
             case Payload.Chat:
+                break;
+            case Payload.Action:
+                Action action = (Action) message.payload(new Action());
+                if(action.object().objectId() == client.index){
+                    client.currentPosX = action.object().direction().x();
+                    logger.info("client{} pos x : {}", client.index, client.currentPosX);
+                    if(client.currentPosX > 100){
+                        client.latch.countDown();
+                    }
+
+                    send(client);
+                }
+                break;
             case Payload.Zone:
                 Zone zone = (Zone) message.payload(new Zone());
                 for (int i = 0; i < zone.objectsLength(); i++) {

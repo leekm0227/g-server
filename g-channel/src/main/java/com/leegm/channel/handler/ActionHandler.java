@@ -30,7 +30,7 @@ public class ActionHandler extends AbstractHandler<Action> {
 
     @Override
     public Message handle(Context context, Action action) {
-        zonePublisher.update(action.object());
-        return response(context, Result.SUCCESS);
+//        zonePublisher.update(action.object());
+        return empty();
     }
 }

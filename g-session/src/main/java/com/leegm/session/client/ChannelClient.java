@@ -1,9 +1,10 @@
-package com.leegm.client.client;
+package com.leegm.session.client;
 
-import com.leegm.client.publisher.SessionPublisher;
 import com.leegm.common.protocol.Message;
 import com.leegm.common.util.ProtocolDecoder;
 import com.leegm.common.util.ProtocolEncoder;
+import com.leegm.session.publisher.ChannelPublisher;
+import com.leegm.session.publisher.SessionPublisher;
 import io.netty.channel.ChannelOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,9 @@ import java.time.Duration;
 public class ChannelClient {
 
     @Autowired
+    ChannelPublisher channelPublisher;
+
+    @Autowired
     SessionPublisher sessionPublisher;
 
     @Autowired
@@ -28,8 +32,7 @@ public class ChannelClient {
     @PostConstruct
     public void init() {
         host = "127.0.0.1";
-//        host = "192.168.0.17";
-        port = 51000;
+        port = 50000;
 
         TcpClient.create(ConnectionProvider.builder("session").build())
                 .host(host)
@@ -41,9 +44,9 @@ public class ChannelClient {
                 })
                 .handle((in, out) -> {
                     in.receiveObject().ofType(Message.class)
-                            .log("channel receive")
+                            .log("channel client")
                             .subscribe(message -> sessionPublisher.onNext(message));
-                    return out.neverComplete();
+                    return out.sendObject(channelPublisher.subscribe());
                 })
                 .connectNow(Duration.ofSeconds(30));
     }

@@ -1,10 +1,11 @@
-package com.leegm.client;
+package com.leegm.channel;
 
+import com.leegm.channel.publisher.ChatPublisher;
+import com.leegm.channel.publisher.ZonePublisher;
 import com.leegm.common.protocol.Message;
 import com.leegm.common.util.Dispatcher;
 import com.leegm.common.util.ProtocolDecoder;
 import com.leegm.common.util.ProtocolEncoder;
-import com.leegm.client.publisher.SessionPublisher;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,14 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import reactor.netty.resources.LoopResources;
 import reactor.netty.tcp.TcpServer;
 
 import java.time.Duration;
 
 @Component
-public class SessionServer implements ApplicationRunner {
+public class ChannelServer implements ApplicationRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(SessionServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChannelServer.class);
 
     @Autowired
     ProtocolEncoder protocolEncoder;
@@ -28,27 +30,30 @@ public class SessionServer implements ApplicationRunner {
     Dispatcher dispatcher;
 
     @Autowired
-    SessionPublisher sessionPublisher;
+    ZonePublisher zonePublisher;
+
+    @Autowired
+    ChatPublisher chatPublisher;
 
     @Override
     public void run(ApplicationArguments args) {
         TcpServer.create()
+                .runOn(LoopResources.create("channel-loop", 4, 8, true))
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_LINGER, 0)
-                .port(40000)
+                .port(50000)
                 .metrics(true)
                 .doOnConnection(connection -> {
                     connection.addHandler(new ProtocolDecoder());
                     connection.addHandler(protocolEncoder);
                 })
-                .handle((inbound, outbound) -> outbound.sendObject(inbound.receiveObject()
-                        .ofType(Message.class)
-                        .log("session server")
-                        .map(dispatcher::handle)
-                        .mergeWith(sessionPublisher.subscribe())
-                ))
-                .bindUntilJavaShutdown(Duration.ofSeconds(30), null);
+                .handle((inbound, outbound) -> {
+                    inbound.receiveObject().ofType(Message.class).subscribe(message -> dispatcher.handle(message));
+                    return outbound.sendObject(zonePublisher.subscribe().mergeWith(chatPublisher.subscribe()));
+//                    return outbound.sendByteArray(inbound.receiveObject().ofType(Message.class).log("channel server").map(message -> message.getByteBuffer().array()));
+                })
+                .bindNow(Duration.ofSeconds(30));
     }
 }
 

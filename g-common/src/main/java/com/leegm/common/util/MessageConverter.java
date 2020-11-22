@@ -26,6 +26,12 @@ public final class MessageConverter {
         return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
     }
 
+    public static Message empty() {
+        FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
+        builder.finish(Message.createMessage(builder, 0, Method.NONE, Result.SUCCESS, Payload.NONE, 0));
+        return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
+    }
+
     public static Message toZone(ZoneBean zoneBean) {
         FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
         int[] arrObject = new int[zoneBean.getObjects().length];

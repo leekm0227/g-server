@@ -1,6 +1,7 @@
 package com.leegm.common.util;
 
 import com.leegm.common.protocol.Message;
+import com.leegm.common.protocol.Payload;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -11,10 +12,11 @@ public class ProtocolEncoder extends MessageToByteEncoder<Message> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) {
-        final byte[] array = msg.getByteBuffer().array();
-        final int size = array.length;
-
-        out.writeInt(size);
-        out.writeBytes(array);
+        if (msg.getByteBuffer() != null) {
+            byte[] array = msg.getByteBuffer().array();
+            int size = array.length;
+            out.writeInt(size);
+            out.writeBytes(array);
+        }
     }
 }

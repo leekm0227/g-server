@@ -6,6 +6,8 @@ import com.leegm.common.protocol.Message;
 import com.leegm.common.protocol.Result;
 import com.leegm.common.util.MessageConverter;
 
+import java.nio.ByteBuffer;
+
 @SuppressWarnings("unchecked")
 public abstract class AbstractHandler<T extends Table> implements Handler<T> {
 
@@ -22,5 +24,9 @@ public abstract class AbstractHandler<T extends Table> implements Handler<T> {
 
     public Message response(Context context, byte result) {
         return MessageConverter.response(context, result);
+    }
+
+    public Message empty() {
+        return new Message();
     }
 }

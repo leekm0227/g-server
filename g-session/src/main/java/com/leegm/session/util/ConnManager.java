@@ -1,4 +1,4 @@
-package com.leegm.client.util;
+package com.leegm.session.util;
 
 import com.leegm.common.util.Const;
 import io.netty.channel.group.ChannelGroup;
