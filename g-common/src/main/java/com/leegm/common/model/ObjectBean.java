@@ -6,10 +6,10 @@ import com.leegm.common.util.Const;
 
 public class ObjectBean extends AbstractBean {
     private String name;
-    private int objectId;
+    private long objectId;
     private byte type;
     private byte state = State.IDLE;
-    private float[] position;
+    private float[] position = new float[]{0, 0, 0};
     private float[] direction = new float[]{0, 0, 0};
     private int hp;
     private int mp;
@@ -23,11 +23,10 @@ public class ObjectBean extends AbstractBean {
     private int maxHp = 1;
     private int maxMp = 1;
 
-    public ObjectBean(String name, int objectId, byte type, float[] position) {
+    public ObjectBean(String name, long objectId, byte type) {
         this.name = name;
         this.objectId = objectId;
         this.type = type;
-        this.position = position;
         this.hp = maxHp;
         this.mp = maxMp;
     }
@@ -54,11 +53,11 @@ public class ObjectBean extends AbstractBean {
         this.name = name;
     }
 
-    public int getObjectId() {
+    public long getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(int objectId) {
+    public void setObjectId(long objectId) {
         this.objectId = objectId;
     }
 

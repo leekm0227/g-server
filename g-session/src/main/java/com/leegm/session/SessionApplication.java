@@ -16,11 +16,6 @@ public class SessionApplication {
     }
 
     @Bean
-    public Dispatcher dispatcher() {
-        return new Dispatcher();
-    }
-
-    @Bean
     public ProtocolEncoder protocolEncoder() {
         return new ProtocolEncoder();
     }

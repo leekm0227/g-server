@@ -1,12 +1,12 @@
 package com.leegm.common.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class ZoneBean extends AbstractBean {
 
     private int zoneId;
-    private ObjectBean[] objects;
+    private List<ObjectBean> objects;
 
     public int getZoneId() {
         return zoneId;
@@ -16,11 +16,19 @@ public class ZoneBean extends AbstractBean {
         this.zoneId = zoneId;
     }
 
-    public ZoneBean(ObjectBean[] objects) {
-        this.objects = objects;
+    public ZoneBean() {
+        this.objects = new ArrayList<>();
     }
 
-    public ObjectBean[] getObjects() {
+    public List<ObjectBean> getObjects() {
         return objects;
+    }
+
+    public boolean addObject(ObjectBean objectBean){
+        return objects.add(objectBean);
+    }
+
+    public boolean removeObject(ObjectBean objectBean){
+        return objects.remove(objectBean);
     }
 }

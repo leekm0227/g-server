@@ -1,10 +1,10 @@
 package com.leegm.session;
 
 import com.leegm.common.protocol.Message;
-import com.leegm.common.util.Dispatcher;
 import com.leegm.common.util.ProtocolDecoder;
 import com.leegm.common.util.ProtocolEncoder;
-import com.leegm.session.publisher.SessionPublisher;
+import com.leegm.session.publisher.ActionPublisher;
+import com.leegm.session.util.Dispatcher;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import reactor.netty.tcp.TcpServer;
 
-import java.nio.ByteBuffer;
 import java.time.Duration;
 
 @Component
@@ -29,26 +28,19 @@ public class SessionServer implements ApplicationRunner {
     Dispatcher dispatcher;
 
     @Autowired
-    SessionPublisher sessionPublisher;
+    ActionPublisher actionPublisher;
 
     @Override
     public void run(ApplicationArguments args) {
         TcpServer.create()
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.SO_LINGER, 0)
                 .port(40000)
                 .metrics(true)
                 .doOnConnection(connection -> {
                     connection.addHandler(new ProtocolDecoder());
                     connection.addHandler(protocolEncoder);
                 })
-                .handle((inbound, outbound) -> outbound.sendObject(inbound.receiveObject()
-                        .ofType(Message.class)
-                        .log("session server")
-                        .map(dispatcher::handle)
-                        .mergeWith(sessionPublisher.subscribe())
-                ))
+                .handle((inbound, outbound) -> outbound.sendObject(dispatcher.handle(inbound.receiveObject().ofType(Message.class)).mergeWith(actionPublisher.subscribe())))
                 .bindUntilJavaShutdown(Duration.ofSeconds(30), null);
     }
 }
