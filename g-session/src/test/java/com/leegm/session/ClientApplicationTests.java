@@ -1,10 +1,11 @@
-package com.leegm.client;
+package com.leegm.session;
 
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.leegm.common.protocol.*;
 import com.leegm.common.protocol.Object;
 import com.leegm.common.util.ProtocolEncoder;
+import com.leegm.session.client.Client;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,9 +73,9 @@ public class ClientApplicationTests {
         int userIdOffset = builder.createString(userId);
         int sessionIdOffset = builder.createString(sessionId);
         int contextOffset = Context.createContext(builder, userIdOffset, sessionIdOffset);
-        com.leegm.common.protocol.Object.startObject(builder);
-        com.leegm.common.protocol.Object.addObjectId(builder, client.index);
-        com.leegm.common.protocol.Object.addDirection(builder, Vec3.createVec3(builder, x, 0, 0));
+        Object.startObject(builder);
+        Object.addObjectId(builder, client.index);
+        Object.addDirection(builder, Vec3.createVec3(builder, x, 0, 0));
         int objectOffset = Object.endObject(builder);
         int actionOffset = Action.createAction(builder, objectOffset);
         builder.finish(Message.createMessage(builder, contextOffset, Method.NONE, Result.SUCCESS, Payload.Action, actionOffset));
@@ -83,6 +84,10 @@ public class ClientApplicationTests {
 
     private static void callBack(Client client, Message message) {
         switch (message.payloadType()) {
+            case Payload.Join:
+                Join join = (Join) message.payload(new Join());
+                join.
+                break;
             case Payload.Chat:
             case Payload.Zone:
                 Zone zone = (Zone) message.payload(new Zone());
