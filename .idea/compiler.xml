@@ -4,5 +4,10 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="g-client" target="1.8" />
+      <module name="g-client.main" target="1.8" />
+      <module name="g-client.test" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

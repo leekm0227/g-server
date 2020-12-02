@@ -1,9 +1,10 @@
-package com.leegm.client.handler;
+package com.leegm.session.handler;
 
 import com.leegm.common.handler.AbstractHandler;
 import com.leegm.common.protocol.*;
 import com.leegm.common.util.Dispatcher;
-import com.leegm.client.publisher.ChannelPublisher;
+import com.leegm.session.publisher.ActionPublisher;
+import com.leegm.session.publisher.ChannelPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class ActionHandler extends AbstractHandler<Action> {
     Dispatcher dispatcher;
 
     @Autowired
-    ChannelPublisher channelPublisher;
+    ActionPublisher actionPublisher;
 
     @PostConstruct
     public void init() {
@@ -32,7 +33,7 @@ public class ActionHandler extends AbstractHandler<Action> {
     public Message handle(Context context, Action action) {
         // valid action
 
-        channelPublisher.onNext(action.getByteBuffer().array());
+        actionPublisher.onNext(context, action);
         return response(context, Result.SUCCESS);
     }
 

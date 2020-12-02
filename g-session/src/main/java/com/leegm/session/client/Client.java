@@ -1,4 +1,4 @@
-package com.leegm.client;
+package com.leegm.session.client;
 
 
 import com.leegm.common.protocol.Message;

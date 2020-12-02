@@ -1,4 +1,4 @@
-package com.leegm.client;
+package com.leegm.session;
 
 import com.leegm.common.util.Dispatcher;
 import com.leegm.common.util.ProtocolEncoder;

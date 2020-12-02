@@ -7,7 +7,8 @@ enum Result:byte{
 	ERROR_RUNTIME,
 	ERROR_INVALID_MESSAGE,
 	ERROR_HANDLER_NOT_FOUND,
-	ERROR_CLS_NOT_FOUND
+	ERROR_CLS_NOT_FOUND,
+	ERROR_EXIST_OBJECT
 }
 
 enum Method:byte{
@@ -78,7 +79,15 @@ table Context{
 
 // message ===========================================================================
 union Payload{
-	Chat, Zone, Inventory, Action
+	Chat, Zone, Inventory, Action, Join
+}
+
+table Join{
+    userId:string;
+    name:string;
+
+    objectId:uint;
+    objects:[Object];
 }
 
 table Zone{

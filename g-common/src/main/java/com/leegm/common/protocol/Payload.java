@@ -9,8 +9,9 @@ public final class Payload {
   public static final byte Zone = 2;
   public static final byte Inventory = 3;
   public static final byte Action = 4;
+  public static final byte Join = 5;
 
-  public static final String[] names = { "NONE", "Chat", "Zone", "Inventory", "Action", };
+  public static final String[] names = { "NONE", "Chat", "Zone", "Inventory", "Action", "Join", };
 
   public static String name(int e) { return names[e]; }
 }

@@ -2,14 +2,14 @@ package com.leegm.common.model;
 
 import com.leegm.common.protocol.Object;
 import com.leegm.common.protocol.State;
-import com.leegm.common.util.Const;
+import com.leegm.common.protocol.Vec3;
 
 public class ObjectBean extends AbstractBean {
     private String name;
-    private int objectId;
+    private long objectId;
     private byte type;
     private byte state = State.IDLE;
-    private float[] position;
+    private float[] position = new float[]{0, 0, 0};
     private float[] direction = new float[]{0, 0, 0};
     private int hp;
     private int mp;
@@ -23,20 +23,33 @@ public class ObjectBean extends AbstractBean {
     private int maxHp = 1;
     private int maxMp = 1;
 
-    public ObjectBean(String name, int objectId, byte type, float[] position) {
+    public ObjectBean(String name, long objectId, byte type) {
         this.name = name;
         this.objectId = objectId;
         this.type = type;
-        this.position = position;
         this.hp = maxHp;
         this.mp = maxMp;
     }
 
+    public ObjectBean(String name, long objectId, byte type, float[] pos) {
+        this.name = name;
+        this.objectId = objectId;
+        this.type = type;
+        this.position = pos;
+        this.hp = maxHp;
+        this.mp = maxMp;
+    }
+
+    public ObjectBean(Object object) {
+        this.name = object.name();
+        this.objectId = object.objectId();
+        this.type = object.type();
+        if (object.position() != null) this.position = vec3ToPos(object.position());
+    }
+
     public ObjectBean update(Object object) {
         if (object.direction() != null) {
-            this.position[Const.POS_X] = object.direction().x();
-            this.position[Const.POS_Y] = object.direction().y();
-            this.position[Const.POS_Z] = object.direction().z();
+            this.position = vec3ToPos(object.direction());
         }
 
         if (object.state() != State.IDLE) {
@@ -44,6 +57,10 @@ public class ObjectBean extends AbstractBean {
         }
 
         return this;
+    }
+
+    public float[] vec3ToPos(Vec3 vec) {
+        return new float[]{vec.x(), vec.y(), vec.z()};
     }
 
     public String getName() {
@@ -54,11 +71,11 @@ public class ObjectBean extends AbstractBean {
         this.name = name;
     }
 
-    public int getObjectId() {
+    public long getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(int objectId) {
+    public void setObjectId(long objectId) {
         this.objectId = objectId;
     }
 

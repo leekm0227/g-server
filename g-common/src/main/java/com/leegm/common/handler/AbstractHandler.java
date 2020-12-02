@@ -23,4 +23,8 @@ public abstract class AbstractHandler<T extends Table> implements Handler<T> {
     public Message response(Context context, byte result) {
         return MessageConverter.response(context, result);
     }
+
+    public Message empty() {
+        return MessageConverter.empty();
+    }
 }

@@ -1,4 +1,4 @@
-package com.leegm.client.util;
+package com.leegm.session.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

@@ -9,8 +9,9 @@ public final class Result {
   public static final byte ERROR_INVALID_MESSAGE = 2;
   public static final byte ERROR_HANDLER_NOT_FOUND = 3;
   public static final byte ERROR_CLS_NOT_FOUND = 4;
+  public static final byte ERROR_EXIST_OBJECT = 5;
 
-  public static final String[] names = { "SUCCESS", "ERROR_RUNTIME", "ERROR_INVALID_MESSAGE", "ERROR_HANDLER_NOT_FOUND", "ERROR_CLS_NOT_FOUND", };
+  public static final String[] names = { "SUCCESS", "ERROR_RUNTIME", "ERROR_INVALID_MESSAGE", "ERROR_HANDLER_NOT_FOUND", "ERROR_CLS_NOT_FOUND", "ERROR_EXIST_OBJECT", };
 
   public static String name(int e) { return names[e]; }
 }

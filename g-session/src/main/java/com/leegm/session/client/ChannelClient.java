@@ -1,6 +1,7 @@
-package com.leegm.client.client;
+package com.leegm.session.client;
 
-import com.leegm.client.publisher.SessionPublisher;
+import com.leegm.session.publisher.ChannelPublisher;
+import com.leegm.session.publisher.SessionPublisher;
 import com.leegm.common.protocol.Message;
 import com.leegm.common.util.ProtocolDecoder;
 import com.leegm.common.util.ProtocolEncoder;
@@ -13,11 +14,14 @@ import reactor.netty.tcp.TcpClient;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 
-@Component
+//@Component
 public class ChannelClient {
 
     @Autowired
     SessionPublisher sessionPublisher;
+
+    @Autowired
+    ChannelPublisher channelPublisher;
 
     @Autowired
     ProtocolEncoder protocolEncoder;
@@ -25,11 +29,11 @@ public class ChannelClient {
     private String host;
     private int port;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         host = "127.0.0.1";
 //        host = "192.168.0.17";
-        port = 51000;
+        port = 50000;
 
         TcpClient.create(ConnectionProvider.builder("session").build())
                 .host(host)
@@ -43,7 +47,7 @@ public class ChannelClient {
                     in.receiveObject().ofType(Message.class)
                             .log("channel receive")
                             .subscribe(message -> sessionPublisher.onNext(message));
-                    return out.neverComplete();
+                    return out.sendObject(channelPublisher.subscribe());
                 })
                 .connectNow(Duration.ofSeconds(30));
     }

@@ -1,9 +1,9 @@
-package com.leegm.client.handler;
+package com.leegm.session.handler;
 
 import com.leegm.common.handler.AbstractHandler;
 import com.leegm.common.protocol.*;
 import com.leegm.common.util.Dispatcher;
-import com.leegm.client.publisher.ChannelPublisher;
+import com.leegm.session.publisher.ChannelPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,6 @@ public class ChatHandler extends AbstractHandler<Chat> {
     @Autowired
     Dispatcher dispatcher;
 
-    @Autowired
-    ChannelPublisher channelPublisher;
-
     @PostConstruct
     public void init() {
         cls = Chat.class;
@@ -32,7 +29,7 @@ public class ChatHandler extends AbstractHandler<Chat> {
     public Message handle(Context context, Chat chat) {
         // valid chat
 
-        channelPublisher.onNext(chat.getByteBuffer().array());
-        return response(context, Result.SUCCESS);
+
+        return empty();
     }
 }

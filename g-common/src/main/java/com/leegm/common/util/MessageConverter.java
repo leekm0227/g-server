@@ -26,6 +26,54 @@ public final class MessageConverter {
         return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
     }
 
+    public static Message empty() {
+        FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
+        builder.finish(Message.createMessage(builder, 0, Method.NONE, Result.SUCCESS, Payload.NONE, 0));
+        return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
+    }
+
+    public static Message toJoin(Context context, long objectId, ObjectBean[] objects) {
+        FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
+        int[] arrObject = new int[objects.length];
+
+        int index = 0;
+        for (ObjectBean object : objects) {
+            int name = builder.createString(object.getName());
+            Object.startObject(builder);
+            Object.addName(builder, name);
+            Object.addObjectId(builder, object.getObjectId());
+            Object.addType(builder, object.getType());
+            Object.addState(builder, object.getState());
+            Object.addPosition(builder, Vec3.createVec3(builder,
+                    object.getPosition(Const.POS_X),
+                    object.getPosition(Const.POS_Y),
+                    object.getPosition(Const.POS_Z))
+            );
+            Object.addHp(builder, object.getHp());
+            Object.addMp(builder, object.getMp());
+
+            // status
+            Object.addPower(builder, object.getPower());
+            Object.addDefense(builder, object.getDefense());
+            Object.addRange(builder, object.getRange());
+            Object.addAttackSpeed(builder, object.getAttackSpeed());
+            Object.addMoveSpeed(builder, object.getMoveSpeed());
+            Object.addMaxHp(builder, object.getMaxHp());
+            Object.addMaxMp(builder, object.getMaxMp());
+            int objectOffset = Object.endObject(builder);
+            arrObject[index] = objectOffset;
+            index++;
+        }
+
+        int objectsVector = Zone.createObjectsVector(builder, arrObject);
+        int userIdOffset = builder.createString(context != null ? context.userId() : "");
+        int sessionIdOffset = builder.createString(context != null ? context.sessionId() : "");
+        int contextOffset = Context.createContext(builder, userIdOffset, sessionIdOffset);
+        int joinOffset = Join.createJoin(builder, userIdOffset, 0, objectId, objectsVector);
+        builder.finish(Message.createMessage(builder, contextOffset, Method.NONE, Result.SUCCESS, Payload.Join, joinOffset));
+        return Message.getRootAsMessage(ByteBuffer.wrap(builder.sizedByteArray()));
+    }
+
     public static Message toZone(ZoneBean zoneBean) {
         FlatBufferBuilder builder = new FlatBufferBuilder(BUFF_SIZE);
         int[] arrObject = new int[zoneBean.getObjects().length];

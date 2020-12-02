@@ -1,10 +1,10 @@
-package com.leegm.client;
+package com.leegm.session;
 
 import com.leegm.common.protocol.Message;
 import com.leegm.common.util.Dispatcher;
 import com.leegm.common.util.ProtocolDecoder;
 import com.leegm.common.util.ProtocolEncoder;
-import com.leegm.client.publisher.SessionPublisher;
+import com.leegm.session.publisher.SessionPublisher;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
